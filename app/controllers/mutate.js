@@ -12,6 +12,7 @@ const { ClientError } = require('../lib/err');
 const resizeImage = async (req, res, next) => {
   const image = req.swagger.params.id;
   const { width, height } = req.swagger.params;
+  // always gives an array, break out
   const record = _.first(await database.getImages(image.value));
 
   if (!record) {

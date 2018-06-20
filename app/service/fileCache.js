@@ -6,7 +6,7 @@ const uuid = require('uuid').v4;
 
 const { ClientError } = require('../lib/err');
 
-const swaggerDoc = yaml.safeLoad(fs.readFileSync('./swagger.yaml'));
+const swaggerDoc = yaml.safeLoad(fs.readFileSync(process.env.SWAGGER));
 const mimetypes = swaggerDoc.definitions.mimetypes.items.enum;
 
 module.exports = multer({

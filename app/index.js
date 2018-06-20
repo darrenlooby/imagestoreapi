@@ -24,7 +24,9 @@ app.setup = async () => {
   await database.initCounter();
 
   swaggerTools.initializeMiddleware(swaggerDoc, (middleware) => {
+    // Overwrite swagger tools implementation of multer
     app.use(fileCache);
+    // remove old files at end of request or upon error
     app.use(autoreap);
     app.use(middleware.swaggerMetadata());
     app.use(middleware.swaggerSecurity({ basicAuth }));
