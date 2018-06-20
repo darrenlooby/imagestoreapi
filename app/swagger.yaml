@@ -1,0 +1,186 @@
+swagger: '2.0'
+host: 'localhost:8080'
+basePath: /v1
+info:
+  version: 1.0.0
+  title: Images API
+  description: An API for uploading and serving images
+schemes:
+  - http
+paths:
+  /ping:
+    x-swagger-router-controller: ping
+    get:
+      operationId: ping
+      summary: Check health of service
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/200'
+  /images:
+    x-swagger-router-controller: images
+    get:
+      operationId: listImages
+      summary: Return all Image objects
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/ImageList'
+  '/images/{id}':
+    x-swagger-router-controller: images
+    parameters:
+      - name: id
+        in: path
+        description: ID of Image object
+        required: true
+        type: integer
+        format: int64
+    get:
+      operationId: getImage
+      summary: Return an Image object
+      produces:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/Image'
+        '404':
+          $ref: '#/responses/ImageNotFoundError'
+    delete:
+      operationId: deleteImage
+      summary: Delete an Image object
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          $ref: '#/responses/ImageDeleted'
+        '401':
+          $ref: '#/responses/UnauthorizedError'
+        '404':
+          $ref: '#/responses/ImageNotFoundError'
+  /upload:
+    x-swagger-router-controller: upload
+    post:
+      operationId: uploadImage
+      summary: Upload an image file and create a new Image object
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - name: fileName
+          in: formData
+          type: string
+          description: The image file name
+        - name: fileData
+          in: formData
+          type: file
+          description: The Image file to upload
+      security:
+        - basicAuth: []
+      responses:
+        '201':
+          $ref: '#/responses/Image'
+        '400':
+          $ref: '#/responses/ValidationError'
+        '401':
+          $ref: '#/responses/UnauthorizedError'
+  '/resize/{id}':
+    x-swagger-router-controller: mutate
+    get:
+      operationId: resizeImage
+      summary: Return an Image object resized according to query parameters
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: ID of image object to fetch
+          required: true
+          type: integer
+          format: int64
+        - name: width
+          in: query
+          description: Target width
+          required: true
+          type: integer
+          format: int64
+        - name: height
+          in: query
+          description: Target height
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          $ref: '#/responses/Image'
+        '400':
+          $ref: '#/responses/ValidationError'
+        '404':
+          $ref: '#/responses/ImageNotFoundError'
+securityDefinitions:
+  basicAuth:
+    type: basic
+definitions:
+  mimetypes:
+    type: array
+    items:
+      type: string
+      enum:
+        - image/png
+        - image/gif
+        - image/jpeg
+        - image/bmp
+        - image/tiff
+  Image:
+    type: object
+    required:
+      - id
+      - url
+      - width
+      - height
+    properties:
+      id:
+        type: integer
+        format: int64
+        example: 1
+      name:
+        type: string
+        example: image
+      width:
+        type: integer
+        format: int64
+        example: 640
+      height:
+        type: integer
+        format: int64
+        example: 480
+      url:
+        type: string
+        format: url
+        example: 'http://example.com/image-640x480.png'
+responses:
+  200:
+    description: All is well
+  Image:
+    description: Image object
+    schema:
+      $ref: '#/definitions/Image'
+  ImageList:
+    description: List of Image objects
+    schema:
+      type: array
+      items:
+        $ref: '#/definitions/Image'
+  ImageDeleted:
+    description: Image object deleted
+  ImageNotFoundError:
+    description: Image object not found
+  ValidationError:
+    description: Some parameters are missing or invalid
+  UnauthorizedError:
+    description: Authentication information is missing or invalid
+    headers:
+      WWW_Authenticate:
+        type: string

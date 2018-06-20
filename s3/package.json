@@ -1,0 +1,21 @@
+{
+  "name": "s3-mock",
+  "version": "1.0.0",
+  "description": "Basic s3 mock",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.259.1",
+    "s3rver": "^2.2.4"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-mocha": "^5.0.0"
+  }
+}

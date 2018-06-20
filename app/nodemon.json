@@ -1,0 +1,6 @@
+{
+  "verbose": true,
+  "ignore": ["temp", "node_modules"],
+  "watch": ["contollers", "lib", "service", "./index.js", "./swagger.yaml"],
+  "ext": "js yaml json"
+}

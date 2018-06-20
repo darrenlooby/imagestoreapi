@@ -1,0 +1,6 @@
+{
+  "IMAGE_COLLECTION": "store",
+  "COUNTERS": "counter",
+  "FILE_LIMIT_MB": 2,
+  "TEMP_DIRECTORY": "./temp"
+}

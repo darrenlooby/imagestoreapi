@@ -1,0 +1,29 @@
+extends: 'airbnb-base'
+env:
+  mocha: true
+plugins:
+  - mocha
+globals:
+  basedir: true
+rules:
+  no-unused-expressions: off
+  import/no-dynamic-require: off
+  import/no-extraneous-dependencies:
+    - 'error'
+    - devDependencies: true
+  strict:
+    - 'error'
+    - safe
+  mocha/no-exclusive-tests: error
+  mocha/no-skipped-tests: error
+  mocha/no-pending-tests: error
+  no-underscore-dangle:
+    - 'error'
+    - allow:
+      - '_id'
+  object-curly-newline:
+    - 'error'
+    - multiline: true
+  comma-dangle:
+    - 'error'
+    - never

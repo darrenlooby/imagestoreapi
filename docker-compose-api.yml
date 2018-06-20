@@ -1,0 +1,42 @@
+
+version: '2.1'
+
+services:
+
+  image-api:
+    build:
+      context: ./app
+      dockerfile: ./Dockerfile
+    working_dir: /
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
+    restart: "on-failure:10"
+    environment:
+      SWAGGER: ${SWAGGER}
+      CONTROLLERS: ${CONTROLLERS}
+      MONGO_CONNECTION: mongodb://image-mongo:27017
+      S3LOCATION: http://image-s3stub:4569
+      INGRESS_PORT: ${INGRESS_PORT}
+      S3_ACCESS_KEY_ID: s3AccessKey
+      S3_SECRET_ACCESS_KEY: s3SecretAccessKey
+      S3_BUCKET_NAME: imagestore
+
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${INGRESS_PORT}/v1/ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    links:
+      - image-mongo
+      - image-s3stub
+    depends_on:
+      image-mongo:
+        condition: service_healthy
+      image-s3stub:
+        condition: service_healthy
+    tty: true
+    command: nodemon ./index.js
